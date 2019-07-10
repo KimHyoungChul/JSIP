@@ -56,16 +56,16 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
         localPort = intent.getStringExtra("localPort");
         localSip = "sip:" +sipProfile.getSipUserName() + "@" + sipProfile.getLocalEndpoint();//本地的sip格式的地址
 
-
-
+        String loggingMessage = new String(localUser + "进入聊天室");
+        DeviceImpl.getInstance().SendMessage(sip, loggingMessage);//把这个消息发给远方的服务器了!
     }
 
-    @Override//还没写完最后一起写
+    @Override//按钮点击还没有写
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.btnBack:
+            case R.id.btnBack://会通知大家这个人已经离开了chatRoom
                 break;
-            case R.id.btnFriendList:
+            case R.id.btnFriendList://会将好友列表刷新给这个人
                 break;
         }
     }
