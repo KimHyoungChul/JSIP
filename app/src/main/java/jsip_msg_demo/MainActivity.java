@@ -5,15 +5,15 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
-import android.text.method.ScrollingMovementMethod;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import com.ui.xt.chatRoomActivity;
 
 import bupt.jsip_demo.R;
 import jsip_ua.SipProfile;
@@ -21,16 +21,13 @@ import jsip_ua.impl.DeviceImpl;
 
 import java.util.HashMap;
 
-public class MainActivity extends ActionBarActivity implements OnClickListener,
+public class MainActivity extends AppCompatActivity implements OnClickListener,
 		OnSharedPreferenceChangeListener {
+
 	SharedPreferences prefs;
-	Button btnSubmit;
-	EditText editTextUser;
-	EditText editTextDomain;
-	EditText editTextTo;
-	EditText editTextMessage;
-	TextView textViewChat;
-	String chatText = "";
+	EditText editName;
+	EditText editPort;
+	EditText chatRoomAddress;//聊天室的地址
 	SipProfile sipProfile;
 
 
@@ -38,6 +35,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		sipProfile = new SipProfile();//SipProfile一开始在这里
         HashMap<String, String> customHeaders = new HashMap<>();//这里用作数据字典
         customHeaders.put("customHeader1","customValue1");
@@ -45,26 +43,19 @@ public class MainActivity extends ActionBarActivity implements OnClickListener,
 
         DeviceImpl.getInstance().Initialize(getApplicationContext(), sipProfile,customHeaders);
         //相当于一个中间层
-		
-		Button btnRegister = (Button) findViewById(R.id.btnSubmit);
-		btnRegister.setOnClickListener(this);
-		Button btnSend = (Button) findViewById(R.id.btnSend);
-		btnSend.setOnClickListener(this);
-		Button btnCall = (Button) findViewById(R.id.btnCall);
-		btnCall.setOnClickListener(this);
 
-		editTextTo = (EditText) findViewById(R.id.editTextTo);//peer address后面跟的横线上填的
-		//它在那里面写死了
-		editTextMessage = (EditText) findViewById(R.id.editTextMessage);
-		//Hello from android也写死了
+		Button btnEnter = (Button) findViewById(R.id.btnEnter);
+		btnEnter.setOnClickListener(this);//这个按钮是点击的时候注册的
 
-		textViewChat = (TextView) findViewById(R.id.textViewChat);
-		textViewChat.setMovementMethod(new ScrollingMovementMethod());
-		//如果有信息了，怎么滚动，我觉得应该是向上滚动
+		editName = (EditText) findViewById(R.id.editName);//用户自己的用户名，在xml里面设定了一下
+		//是Caroline
+		editPort = (EditText) findViewById(R.id.editPort);//客户端用户自己的端口号
+		//在xml里面设定了一下
+		chatRoomAddress = (EditText) findViewById(R.id.chatRoomAddress);
+		//聊天室的ip地址和端口号
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);//存数据的
 
-		// register preference change listener
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		initializeSipFromPreferences();//用prefs来初始化sip
 
@@ -93,55 +84,65 @@ public class MainActivity extends ActionBarActivity implements OnClickListener,
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View v) {//这个是点击Main界面的enter会发生的事情
 		switch (v.getId()) {
-		case (R.id.btnSubmit):
-			DeviceImpl.getInstance().Register();//都是用get方法，把构造函数写空
-			break;
-		case (R.id.btnCall)://暂时不用
-		
-			DeviceImpl.getInstance().Call(editTextTo.getText().toString());
-		
-			break;
-		case (R.id.btnSend):
-			
-			DeviceImpl.getInstance().SendMessage(editTextTo.getText().toString(), editTextMessage.getText().toString() );
-			
+		case (R.id.btnEnter):
+			String toChatRoom = chatRoomAddress.getText().toString();
+			String remoteIP;
+			String remotePort;
+			if(toChatRoom.split(":").length>2){
+				remotePort = toChatRoom.split(":")[2];//getPort
+				remoteIP = toChatRoom.split(":")[1];
+				remoteIP = remoteIP.substring(remoteIP.indexOf("@") + 1);
+
+			}else{
+				remoteIP = "192.168.43.196";
+				remotePort = "5060";
+			}
+
+			//操纵对应的xml文件
+			//用SharedPreference来保存key-value键值对
+			//下面这一行是让editor处于可编辑状态
+			SharedPreferences.Editor editor = prefs.edit();
+			//以下用putString存放键值对
+			editor.putString("remoteIP", remoteIP);
+			editor.putString("remotePort", remotePort);
+			editor.putString("localUser", editName.getText().toString());
+			editor.putString("localPort", editPort.getText().toString());
+
+			Intent intent = new Intent(this, chatRoomActivity.class);//这里是在构造一个指定目标组件的intent,我觉得应该是点击之后跳转到这个界面里面来
+			//把这个mainActivity界面里面得数据传过去
+			//存到extra里面去
+			intent.putExtra("sip", toChatRoom);//聊天室的地址(sip格式的包括用户名,IP,端口号等)
+			intent.putExtra("remoteIP", remoteIP);
+			intent.putExtra("remotePort", remotePort);
+			intent.putExtra("localUser", editName.getText().toString());
+			intent.putExtra("localPort", editPort.getText().toString());
+
 			break;
 		}
 	}
-
-
-
-
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals("pref_proxy_ip")) {
-			sipProfile.setRemoteIp((prefs.getString("pref_proxy_ip", "")));
-		} else if (key.equals("pref_proxy_port")) {
+		if (key.equals("remoteIP")) {
+			sipProfile.setRemoteIp((prefs.getString("remoteIP", "")));
+		} else if (key.equals("remotePort")) {
 			sipProfile.setRemotePort(Integer.parseInt(prefs.getString(
-					"pref_proxy_port", "5060")));
-		}  else if (key.equals("pref_sip_user")) {
-			sipProfile.setSipUserName(prefs.getString("pref_sip_user",
-					"alice"));
-		} else if (key.equals("pref_sip_password")) {
-			sipProfile.setSipPassword(prefs.getString("pref_sip_password",
-					"1234"));
-		}
-
+					"remotePort", "5060")));
+		}  else if (key.equals("localUser")) {
+			sipProfile.setSipUserName(prefs.getString("localUser",
+					"Caroline"));
+		} 
 	}
 
 	@SuppressWarnings("static-access")
 	private void initializeSipFromPreferences() {
-		sipProfile.setRemoteIp((prefs.getString("pref_proxy_ip", "")));
+		sipProfile.setRemoteIp((prefs.getString("remoteIP", "")));
 		sipProfile.setRemotePort(Integer.parseInt(prefs.getString(
-				"pref_proxy_port", "5060")));
-		sipProfile.setSipUserName(prefs.getString("pref_sip_user", "alice"));
-		sipProfile.setSipPassword(prefs
-				.getString("pref_sip_password", "1234"));
-
+				"remotePort", "5060")));
+		sipProfile.setSipUserName(prefs.getString("localUser", "Caroline"));
 	}
 
 }
