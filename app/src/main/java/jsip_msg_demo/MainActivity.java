@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			intent.putExtra("localUser", editName.getText().toString());
 			intent.putExtra("localPort", editPort.getText().toString());
 
+			startActivity(intent);
+
 			break;
 		}
 	}
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		}  else if (key.equals("localUser")) {
 			sipProfile.setSipUserName(prefs.getString("localUser",
 					"Caroline"));
-		} 
+		}
 	}
 
 	@SuppressWarnings("static-access")
