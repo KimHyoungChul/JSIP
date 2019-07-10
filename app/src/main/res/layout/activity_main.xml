@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
-                android:text="sip@chatR@192.168.43.196:5060" />
+                android:text="sip:chatR@192.168.43.196:5060" />
         </LinearLayout>
     </LinearLayout>
 

@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			editor.putString("localPort", editPort.getText().toString());
 
 			Intent intent = new Intent(this, chatRoomActivity.class);//这里是在构造一个指定目标组件的intent,我觉得应该是点击之后跳转到这个界面里面来
-			//把这个mainActivity界面里面得数据传过去
+			//把这个mainActivity界面里面的数据传过去
 			//存到extra里面去
 			intent.putExtra("sip", toChatRoom);//聊天室的地址(sip格式的包括用户名,IP,端口号等)
 			intent.putExtra("remoteIP", remoteIP);
