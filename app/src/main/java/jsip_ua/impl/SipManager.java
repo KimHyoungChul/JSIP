@@ -41,6 +41,7 @@ import android.javax.sip.header.ViaHeader;
 import android.javax.sip.message.MessageFactory;
 import android.javax.sip.message.Request;
 import android.javax.sip.message.Response;
+import android.os.Handler;
 
 import org.apache.http.conn.util.InetAddressUtils;
 import jsip_ua.ISipEventListener;
@@ -94,6 +95,11 @@ public class SipManager implements SipListener, ISipManager, Serializable {
 	// could also use dialog.isServer() flag but have found mixed opinions about it)
 	CallDirection direction = CallDirection.NONE;
 	private int remoteRtpPort;
+	private Handler handler;
+
+	public void setHandler(Handler handler){
+		this.handler = handler;
+	}
 
 	// Constructors/Initializers
 	public SipManager(SipProfile sipProfile) {//初始化，先把sipProfile里面的东西传过来，

@@ -1,6 +1,7 @@
 package jsip_ua.impl;
 
 import android.content.Context;
+import android.os.Handler;
 
 import jsip_ua.IDevice;
 import jsip_ua.NotInitializedException;
@@ -33,10 +34,20 @@ public class DeviceImpl implements IDevice,Serializable {//能够序列化
 	SipManager 	 sipManager;
 	SipProfile 	 sipProfile;
 	SoundManager soundManager;
+	Handler handler;
 
 	boolean isInitialized;
 	public SipUADeviceListener sipuaDeviceListener = null;
 	public SipUAConnectionListener sipuaConnectionListener = null;
+
+	public void setHandler(Handler handler){
+		this.handler = handler;
+		sipManager.setHandler(handler);
+	}
+
+	public SipProfile getSipProfile(){
+		return sipProfile;
+	}
 
 	private DeviceImpl(){
 		
@@ -47,6 +58,7 @@ public class DeviceImpl implements IDevice,Serializable {//能够序列化
 		}
 		return device;
 	}
+
     public void Initialize(Context context, SipProfile sipProfile, HashMap<String,String> customHeaders){
         this.Initialize(context,sipProfile);//当前情景，把sipProfile传到这个中间层里面来
         sipManager.setCustomHeaders(customHeaders);//从中间层把customHearders传过去
