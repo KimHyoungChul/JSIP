@@ -95,7 +95,7 @@ public class SipManager implements SipListener, ISipManager, Serializable {
 	// could also use dialog.isServer() flag but have found mixed opinions about it)
 	CallDirection direction = CallDirection.NONE;
 	private int remoteRtpPort;
-	private Handler handler;
+	private android.os.Handler handler;
 
 	public void setHandler(Handler handler){
 		this.handler = handler;

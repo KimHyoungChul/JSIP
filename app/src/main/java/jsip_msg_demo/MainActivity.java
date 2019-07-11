@@ -6,6 +6,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements OnClickListener,
 		OnSharedPreferenceChangeListener {
 
+	static final String TAG = "MainActivity";
 	SharedPreferences prefs;
 	EditText editName;
 	EditText editPort;
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			editor.putString("remotePort", remotePort);
 			editor.putString("localUser", editName.getText().toString());
 			editor.putString("localPort", editPort.getText().toString());
+			editor.apply();
 
 			Intent intent = new Intent(this, chatRoomActivity.class);//这里是在构造一个指定目标组件的intent,我觉得应该是点击之后跳转到这个界面里面来
 			//把这个mainActivity界面里面的数据传过去
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			intent.putExtra("localUser", editName.getText().toString());
 			intent.putExtra("localPort", editPort.getText().toString());
 
+			Log.d(TAG,"准备跳转");
 			startActivity(intent);
 
 			break;

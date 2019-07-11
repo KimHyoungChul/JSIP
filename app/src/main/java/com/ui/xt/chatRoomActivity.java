@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import jsip_ua.impl.DeviceImpl;
 
 public class chatRoomActivity extends AppCompatActivity implements OnClickListener, Handler.Callback {
 
+    private static final String TAG = "chatRoom";
     private SipProfile sipProfile;
     private String sip;
     private String remoteIP;
@@ -34,6 +36,7 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
+        Log.d(TAG,"进来了！");
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -56,8 +59,13 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
         localPort = intent.getStringExtra("localPort");
         localSip = "sip:" +sipProfile.getSipUserName() + "@" + sipProfile.getLocalEndpoint();//本地的sip格式的地址
 
-        String loggingMessage = new String(localUser + "进入聊天室");
+        System.out.println("将要发送到的地址" + sip);
+
+        String loggingMessage = localUser + "进入聊天室";
         DeviceImpl.getInstance().SendMessage(sip, loggingMessage);//把这个消息发给远方的服务器了!
+        Log.d(TAG,sip);
+        Log.d(TAG,"消息发送完成");
+
     }
 
     @Override//按钮点击还没有写
