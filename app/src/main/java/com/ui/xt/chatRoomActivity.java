@@ -29,6 +29,7 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
 
     Button btnBack;
     Button btnFriendList;
+    Button btnSend;
 
     private Handler handler = new Handler(this);
 
@@ -47,6 +48,8 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
         btnBack.setOnClickListener(this);
         btnFriendList = (Button) findViewById(R.id.btnFriendList);
         btnFriendList.setOnClickListener(this);
+        btnSend = (Button) findViewById(R.id.btnSend);//发送消息按钮
+        btnSend.setOnClickListener(this);
 
         DeviceImpl.getInstance().setHandler(this.getHandler());
         sipProfile =DeviceImpl.getInstance().getSipProfile();
@@ -77,6 +80,8 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
 
                 startActivity(intent);
 
+                break;
+            case R.id.btnSend://发送消息的按钮
                 break;
         }
     }
