@@ -67,6 +67,16 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
             case R.id.btnBack://会通知大家这个人已经离开了chatRoom
                 break;
             case R.id.btnFriendList://会将好友列表刷新给这个人
+                Intent intent = new Intent(this, friendList.class);//跳转到好友列表
+
+                intent.putExtra("sip", sip);//聊天室的地址(sip格式的包括用户名,IP,端口号等)
+                intent.putExtra("remoteIP", remoteIP);
+                intent.putExtra("remotePort", remotePort);
+                intent.putExtra("localUser", localUser);
+                intent.putExtra("localPort", localPort);
+
+                startActivity(intent);
+
                 break;
         }
     }
