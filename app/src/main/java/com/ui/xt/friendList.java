@@ -27,6 +27,8 @@ public class friendList extends AppCompatActivity implements OnClickListener {//
 
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(this);
+
+        listView = (ListView) findViewById(R.id.listView);
     }
 
     @Override
