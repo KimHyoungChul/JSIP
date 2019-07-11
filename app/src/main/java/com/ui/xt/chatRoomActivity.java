@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import bupt.jsip_demo.R;
 import jsip_ua.SipProfile;
@@ -27,9 +30,15 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
 
     private String localSip;
 
-    Button btnBack;
-    Button btnFriendList;
-    Button btnSend;
+    private Button btnBack;
+    private Button btnFriendList;
+    private Button btnSend;
+
+    private EditText Name;
+    private EditText Input;
+
+    private ListView MessagePrint;
+    private ArrayAdapter<String> adapter;
 
     private Handler handler = new Handler(this);
 
@@ -51,6 +60,11 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
         btnSend = (Button) findViewById(R.id.btnSend);//发送消息按钮
         btnSend.setOnClickListener(this);
 
+        Name = (EditText) findViewById(R.id.Name);
+        Input = (EditText) findViewById(R.id.Input);
+
+        MessagePrint = (ListView) findViewById(R.id.Message);//信息打印区
+
         DeviceImpl.getInstance().setHandler(this.getHandler());
         sipProfile =DeviceImpl.getInstance().getSipProfile();
 
@@ -68,6 +82,8 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
     public void onClick(View v){
         switch (v.getId()){
             case R.id.btnBack://会通知大家这个人已经离开了chatRoom
+                //to do
+                //send byebye
                 break;
             case R.id.btnFriendList://会将好友列表刷新给这个人
                 Intent intent = new Intent(this, friendList.class);//跳转到好友列表
@@ -82,11 +98,19 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
 
                 break;
             case R.id.btnSend://发送消息的按钮
+                if(Input.getText().toString() != null){
+                    String receiver = Name.getText().toString();//接收方的名字
+                    String message = Input.getText().toString();//要发送的信息
+                    //to do
+                    //sendMessage
+                }
                 break;
         }
     }
 
     public boolean handleMessage(Message msg){//没写完
+        //to do
+        //setAdapter
         return true;
     }
 

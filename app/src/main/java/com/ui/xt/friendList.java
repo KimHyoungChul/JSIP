@@ -25,15 +25,17 @@ public class friendList extends AppCompatActivity implements OnClickListener {//
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
 
-        //btnRefresh.findViewById(R.id.btnRefresh);
+        btnRefresh = (Button) findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(this);
     }
 
-    @Override//按钮点击还没有写
+    @Override
     public void onClick(View v){
         switch (v.getId()){
-            //case R.id.btnRefresh://这个人点击刷新好友列表
-                //break;
+            case R.id.btnRefresh://这个人点击刷新好友列表
+                //to do
+                //refresh
+                break;
         }
     }
 }
