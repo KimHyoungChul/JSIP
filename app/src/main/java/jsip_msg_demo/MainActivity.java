@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			intent.putExtra("localUser", editName.getText().toString());
 			intent.putExtra("localPort", editPort.getText().toString());
 
-			Log.d(TAG,"准备跳转");
+			DeviceImpl.getInstance().Register();
+
 			startActivity(intent);
 
 			break;
