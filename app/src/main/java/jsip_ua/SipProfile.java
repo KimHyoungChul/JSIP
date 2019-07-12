@@ -22,6 +22,8 @@
 
 package jsip_ua;
 
+import java.util.ArrayList;
+
 public class SipProfile {
 	private String localIp;
 	private  int localPort = 5080;
@@ -31,6 +33,16 @@ public class SipProfile {
 	private  int remotePort = 5060;
 	private String sipUserName;
 	private String sipPassword;
+
+	private ArrayList<String> friList;
+
+	public ArrayList<String> getFriendList(){
+		return friList;
+	}
+
+	public SipProfile(){
+		friList = new ArrayList<String>();
+	}
 
 	public String getLocalIp() {
 		return localIp;

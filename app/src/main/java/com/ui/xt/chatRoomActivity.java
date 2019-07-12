@@ -1,5 +1,6 @@
 package com.ui.xt;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import bupt.jsip_demo.R;
 import jsip_ua.SipProfile;
@@ -37,13 +41,25 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
     private EditText Name;
     private EditText Input;
 
+    private ArrayList<String> msgList;
     private ListView MessagePrint;
     private ArrayAdapter<String> adapter;
 
-    private Handler handler = new Handler(this);
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            //System.out.println("正在handle Message" + msgList.get(msgList.size() - 1));
+            msgList.add((String)msg.obj);
+            //msgList.add("handler能执行");
+            adapter.notifyDataSetChanged();//用同一个view去更新界面，当有新的数据进来的时候
+        }
+    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {//给按钮加监听器
+        //以及加上适配器，有处理消息更新的handler
+        //最后把
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
         Log.d(TAG,"进来了！");
@@ -60,22 +76,17 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
         btnSend = (Button) findViewById(R.id.btnSend);//发送消息按钮
         btnSend.setOnClickListener(this);
 
-        Name = (EditText) findViewById(R.id.Name);
-        Input = (EditText) findViewById(R.id.Input);
+        //消息列表的适配器
+        MessagePrint = (ListView) findViewById(R.id.Message);
+        msgList = new ArrayList<String>();//往这里面加东西然后打印出来
+        //msgList.add("看看有没有消息");
+        adapter = new MessageAdapter(this, msgList);
+        MessagePrint.setAdapter(adapter);//给listview加上适配器
 
-        MessagePrint = (ListView) findViewById(R.id.Message);//信息打印区
+        //handler.handleMessage(new Message());//开始处理，刷新界面
 
         DeviceImpl.getInstance().setHandler(this.getHandler());
         sipProfile =DeviceImpl.getInstance().getSipProfile();
-
-        Intent intent = getIntent();
-        sip = intent.getStringExtra("sip");//远方的sip,应该是chatRoom的sip格式的地址
-        remoteIP = intent.getStringExtra("remoteIP");
-        remotePort = intent.getStringExtra("remotePort");
-        localUser = intent.getStringExtra("localUser");
-        localPort = intent.getStringExtra("localPort");
-        localSip = "sip:" +sipProfile.getSipUserName() + "@" + sipProfile.getLocalEndpoint();//本地的sip格式的地址
-
     }
 
     @Override//按钮点击还没有写
@@ -87,34 +98,38 @@ public class chatRoomActivity extends AppCompatActivity implements OnClickListen
                 break;
             case R.id.btnFriendList://会将好友列表刷新给这个人
                 Intent intent = new Intent(this, friendList.class);//跳转到好友列表
-
-                intent.putExtra("sip", sip);//聊天室的地址(sip格式的包括用户名,IP,端口号等)
-                intent.putExtra("remoteIP", remoteIP);
-                intent.putExtra("remotePort", remotePort);
-                intent.putExtra("localUser", localUser);
-                intent.putExtra("localPort", localPort);
-
+                intent.putExtra("friList", DeviceImpl.getInstance().getSipProfile().getFriendList());
                 startActivity(intent);
-
                 break;
             case R.id.btnSend://发送消息的按钮
-                if(Input.getText().toString() != null){
+                //todo
+                //修改buildMessage(),应该是取到好友列表
+                //最后无论是私聊还是群聊都是通过服务器转发
+                Name = (EditText) findViewById(R.id.Name);
+                Input = (EditText) findViewById(R.id.Input);
+                if(!Input.getText().toString().equals("")){
+                    System.out.println(Input.getText().toString());
                     String receiver = Name.getText().toString();//接收方的名字
                     String message = Input.getText().toString();//要发送的信息
-                    //to do
-                    //sendMessage
+                    DeviceImpl.getInstance().SendMessage(receiver, message);
+                    Input.setText("");
                 }
                 break;
         }
     }
 
-    public boolean handleMessage(Message msg){//没写完
-        //to do
-        //setAdapter
+    public boolean handleMessage(Message msg){
         return true;
     }
 
     public Handler getHandler(){
         return handler;
+    }
+
+    protected class MessageAdapter extends ArrayAdapter<String> {
+        public MessageAdapter(Context context,
+                              List<String> items){
+            super(context, android.R.layout.simple_list_item_1, items);
+        }
     }
 }

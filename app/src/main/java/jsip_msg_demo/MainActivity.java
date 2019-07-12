@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				remoteIP = remoteIP.substring(remoteIP.indexOf("@") + 1);
 
 			}else{
-				remoteIP = "192.168.43.196";
-				remotePort = "5060";
+				remoteIP = "10.28.148.33";
+				remotePort = "5062";
 			}
 
 			//操纵对应的xml文件
@@ -113,16 +113,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			editor.putString("localPort", editPort.getText().toString());
 			editor.apply();
 
-			Intent intent = new Intent(this, chatRoomActivity.class);//这里是在构造一个指定目标组件的intent,我觉得应该是点击之后跳转到这个界面里面来
+			Intent intent = new Intent(this, chatRoomActivity.class);//这里是在构造一个指定目标组件的intent,
+			// 我觉得应该是点击之后跳转到这个界面里面来
 			//把这个mainActivity界面里面的数据传过去
-			//存到extra里面去
+			//存到extra里面去,所有附加信息的集合。
+			//我在chatRoom里面要完成的动作:需要的附加信息有:
 			intent.putExtra("sip", toChatRoom);//聊天室的地址(sip格式的包括用户名,IP,端口号等)
 			intent.putExtra("remoteIP", remoteIP);
 			intent.putExtra("remotePort", remotePort);
 			intent.putExtra("localUser", editName.getText().toString());
 			intent.putExtra("localPort", editPort.getText().toString());
 
-			DeviceImpl.getInstance().Register();
+			DeviceImpl.getInstance().Register();//发送Register消息
 
 			startActivity(intent);
 
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			sipProfile.setRemoteIp((prefs.getString("remoteIP", "")));
 		} else if (key.equals("remotePort")) {
 			sipProfile.setRemotePort(Integer.parseInt(prefs.getString(
-					"remotePort", "5060")));
+					"remotePort", "5062")));
 		}  else if (key.equals("localUser")) {
 			sipProfile.setSipUserName(prefs.getString("localUser",
 					"Caroline"));
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private void initializeSipFromPreferences() {
 		sipProfile.setRemoteIp((prefs.getString("remoteIP", "")));
 		sipProfile.setRemotePort(Integer.parseInt(prefs.getString(
-				"remotePort", "5060")));
+				"remotePort", "5062")));
 		sipProfile.setSipUserName(prefs.getString("localUser", "Caroline"));
 	}
 

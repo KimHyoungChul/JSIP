@@ -56,10 +56,11 @@ public class SipRequestMsgBuilder {
                 "sip:" + sipManager.getSipProfile().getRemoteEndpoint()).getURI();
 
         // Build the request
+        String fromName = sipManager.getSipProfile().getSipUserName();
         final Request request = messageFactory.createRequest(requestURI,
                 Request.REGISTER, sipProvider.getNewCallId(),
                 headerFactory.createCSeqHeader(1l, Request.REGISTER),
-                headerFactory.createFromHeader(fromAddress, "c3ff411e"),
+                headerFactory.createFromHeader(fromAddress, fromName),
                 headerFactory.createToHeader(toAddress, null), viaHeaders,
                 headerFactory.createMaxForwardsHeader(70));
 
@@ -84,8 +85,8 @@ public class SipRequestMsgBuilder {
         SipURI from = sipManager.addressFactory.createSipURI(sipManager.getSipProfile().getSipUserName(), sipManager.getSipProfile().getLocalEndpoint());
         Address fromNameAddress = sipManager.addressFactory.createAddress(from);
         // fromNameAddress.setDisplayName(sipUsername);
-        FromHeader fromHeader = sipManager.headerFactory.createFromHeader(fromNameAddress,
-                "Tzt0ZEP92");
+        String fromName = sipManager.getSipProfile().getSipUserName();
+        FromHeader fromHeader = sipManager.headerFactory.createFromHeader(fromNameAddress, fromName);
 
         URI toAddress = sipManager.addressFactory.createURI(to);
         Address toNameAddress = sipManager.addressFactory.createAddress(toAddress);

@@ -1,5 +1,6 @@
 package com.ui.xt;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +10,14 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import bupt.jsip_demo.R;
+import jsip_ua.SipProfile;
 
 public class friendList extends AppCompatActivity implements OnClickListener {//这里有一个refresh按钮
     //中间是一个ListView
 
     private static final String TAG = "friendList";
 
-    private String friendInfo;
+    private SipProfile sipProfile;
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private Button btnRefresh;
@@ -24,6 +26,11 @@ public class friendList extends AppCompatActivity implements OnClickListener {//
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.hide();
+        }
 
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(this);

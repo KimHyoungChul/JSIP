@@ -69,6 +69,23 @@ public class DeviceImpl implements IDevice,Serializable {//能够序列化
 		sipManager = new SipManager(sipProfile);
 		soundManager = new SoundManager(context,sipProfile.getLocalIp());
 		sipManager.addSipEventListener(this);//SipEventListener的列表新加入listener
+
+		sipuaDeviceListener = new SipUADeviceListener() {
+			@Override
+			public void onSipUAConnectionArrived(SipEvent event) {
+
+			}
+
+			@Override
+			public void onSipUAMessageArrived(SipEvent event) {
+				String from = event.from;
+				String message = event.content;
+
+				handler.obtainMessage(1, 1, -1, from+":"+message)
+						.sendToTarget();//生成Message对象
+				//.sendToTarget()直接发送到handler对应的消息队列中等待处理
+			}
+		};
 	}
 	
 	@Override
